@@ -1,6 +1,6 @@
 <?php
 /*
-* AUTHOUR : Naimur Hasan
+* Developer: Saad Hasan saadh393@gmaill.com, Naimur Hasan imuhasan98@gmaill.com 
 * DESCRIPTION : THIS SCRIPT IS TO REPLACE SOMETHING IN MULTIPLE STATIC TEXT FILE LIKE HTML, XHTML etc
 * PHP VERSION : 7.2.17
 */
@@ -34,7 +34,7 @@
 <div class="page-wrapper">
 
 </div>
-
+<!-- NOTHING__0 -->
 <!-- page wrapper end -->
 
 <div class="jumbotron jumbotron-fluid mb-0 pb-1 pt-3">
@@ -67,7 +67,7 @@
 
 				<!-- START FIND REPLACE FORM -->
 				<?php if(isset($_REQUEST['ext']) && !isset($_REQUEST['find']) && !isset($_REQUEST['replace']) && !isset($_REQUEST['restore'])): ?>
-				<form id="app_form_2" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+				<form id="app_form_2" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
 					<div class="form-group">
 						<label for="Find">FIND:</label>
 						<textarea class="form-control" required="required" id="find-text" name="find"></textarea>
@@ -140,6 +140,8 @@ function find_replace_files(){
 		$find = $_REQUEST['find'];
 		$replace = $_REQUEST['replace'];
 
+
+
 		$files = scandir('./');
 
 		foreach ($files as $key => $file) {
@@ -159,8 +161,19 @@ function find_replace_files(){
 			}
 
 			//finally search and replace
+
 			$file_contents = file_get_contents($file);
-			$file_contents = str_replace($find, $replace, $file_contents);
+			if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+               //FOR_WINDOWS SERVER
+               $file_contents = str_ireplace( $find,  $replace, $file_contents);
+               
+            } else {
+                //FOR_LINUX SERVER
+                $file_contents = str_ireplace(preg_replace('~\r\n?~', "\n", $find), preg_replace('~\r\n?~', "\n",  $replace), $file_contents);
+            }
+			
+			
+			//$file_contents = str_ireplace($find, $replace, $file_contents);
 			file_put_contents($file, $file_contents);
 
 		}
